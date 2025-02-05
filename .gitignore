@@ -27,6 +27,8 @@ share/python-wheels/
 MANIFEST
 Scripts/
 share/
+.Tensor.csv
+runs
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
