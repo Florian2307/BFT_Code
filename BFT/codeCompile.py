@@ -1,14 +1,12 @@
 import torch
 import timeit
 import sys
- 
+import os 
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+tensor_path = os.path.join(script_dir, 'Tensor.csv')
 # Eingabe-Tensor mit Daten
-tensor = torch.tensor([
-    [100.000, 200.000, 300.000, 400.000, 0.95, 0],  # loop
-    [110.000, 210.000, 310.000, 410.000, 0.95, 21],  # unendlich
-    [200.000, 300.000, 400.000, 500.000, 0.95, 7],   # Lampe1
-    [300.000, 400.000, 500.000, 600.000, 0.95, 1]    # endLoop
-])
+tensor = tensor_path
  
 # Konfidenzschwelle
 confidence_threshold = 0.5
