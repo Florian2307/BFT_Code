@@ -1,26 +1,22 @@
 import numpy as np
 import timeit
-import os 
+import os
+import yolo11
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 tensor_path = os.path.join(script_dir, 'Tensor.csv')
 codes_path = os.path.join(script_dir, 'codes.csv')
 
 # CSV-Datei als NumPy-Array laden
-tensor = np.array([
-   [50,  30, 100, 80, 0.9, 2],    # "if"
-   [110, 35, 130, 55, 0.95, 4],   # "tasterGedrückt" 
-   [150, 35, 170, 55, 0.9, 6],    # "lampeEin"
-   [50, 100, 100, 150, 0.8, 3],   # "endIf"
-])
+tensor = yolo11.output_tensor
 # Konfidenzschwelle
-confidence_threshold = 0.5
+confidence_threshold = 0.1
 
 # Filtere irrelevante Einträge basierend auf der Konfidenz (Spalte 4)
 filtered_tensor = tensor[tensor[:, 4] > confidence_threshold]
 
 # Sortiere nach x_min (Spalte 0)
-sorted_tensor = filtered_tensor[np.argsort(filtered_tensor[:, 0])]
+sorted_tensor = filtered_tensor[np.lexsort((filtered_tensor[:, 0], filtered_tensor[:, 1]))]
 
 # Konvertiere die Einträge in eine lesbare Struktur (Liste von Dictionaries)
 blocks = []
