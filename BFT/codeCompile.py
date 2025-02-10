@@ -37,7 +37,7 @@ for row in sorted_tensor:
     blocks.append(block)
 
 # Für die Codegenerierung verwenden wir nur Blokke, die einen Befehl darstellen.
-# Die "adjacent info"-Blokke (z. B. "unendlich", "tasterGedruckt", "tasterNichtGedruckt")
+# Die "adjacent info"-Blokke (z. B. "unendlich", "tasterGedruckt", "tasterNichtGedruckt") 
 # sollen dabei nicht direkt in den Output gehen.
 code_blocks = [b for b in blocks if b["class_name"] not in ("unendlich", "tasterGedruckt", "tasterNichtGedruckt")]
 
@@ -53,9 +53,9 @@ def find_adjacent_info(block, blocks, mode, tolerance=50, vertical_tolerance=50)
     
     "Unmittelbar rechts" bedeutet hier:
       - Der horizontale Abstand zwischen block["x_max"] und candidate["x_min"] 
-        ist kleiner als 'tolerance' (hier werden auch kleine negative Abstaende akzeptiert,
+        ist kleiner als 'tolerance' (kleine negative Abstaende werden akzeptiert,
         wenn sich Blokke ueberlappen).
-      - Der Unterschied der y_min-Werte ist kleiner als 'vertical_tolerance'.
+      - Der Unterschied der y_min-Werte liegt innerhalb von 'vertical_tolerance'.
     
     Falls mehrere Kandidaten diese Kriterien erfuellen, wird derjenige mit dem
     kleinsten horizontalen Abstand gewaehlt.
@@ -65,10 +65,11 @@ def find_adjacent_info(block, blocks, mode, tolerance=50, vertical_tolerance=50)
       blocks: Liste aller Blokke (die komplette Liste, nicht nur code_blocks).
       mode: "count" oder "taster"
         - "count": 
-             * Falls der gefundene Kandidat den class_name "unendlich" hat, wird "unendlich"
+             * Falls der gefundene Kandidat ein Zahlenblock ist (class_id < 10),
+               wird der entsprechende Zahlenwert (den String, wie er in codes steht) 
                zurueckgegeben.
-             * Liegt dessen class_id (zwischen 10 und 18) vor, wird (class_id - 10) als String
-               zurueckgegeben.
+             * Falls der Kandidat den class_name "unendlich" hat (class_id == 19),
+               wird "unendlich" zurueckgegeben.
              * Kein Kandidat liefert "1".
         - "taster":
              * Hat der Kandidat den class_name "tasterGedruckt", wird "taster" zurueckgegeben.
@@ -93,10 +94,11 @@ def find_adjacent_info(block, blocks, mode, tolerance=50, vertical_tolerance=50)
                 best_candidate = candidate
     if mode == "count":
         if best_candidate:
-            if best_candidate["class_name"] == "unendlich":
+            # Falls der Kandidat ein Zahlenblock ist (class_id von 0 bis 9)
+            if best_candidate["class_id"] < 10:
+                return best_candidate["class_name"]
+            elif best_candidate["class_id"] == 19:  # "unendlich"
                 return "unendlich"
-            elif 10 <= best_candidate["class_id"] <= 18:
-                return str(best_candidate["class_id"] - 10)
         return "1"
     elif mode == "taster":
         if best_candidate:
@@ -145,6 +147,7 @@ for block in code_blocks:
         output_lines.append(f"{get_indentation(indentation_level)}lampe.turn_off()\n")
     elif code == "Pausiere":
         paus_count = find_adjacent_info(block, blocks, mode="count", tolerance=50, vertical_tolerance=50)
+        # Falls "unendlich" gefunden wird, verwenden wir stattdessen 1
         if paus_count == "unendlich":
             paus_count = "1"
         output_lines.append(f"{get_indentation(indentation_level)}time.sleep({paus_count})\n")

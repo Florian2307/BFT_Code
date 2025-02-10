@@ -1,8 +1,8 @@
 import time
 import RPi.GPIO as GPIO
 
-while True:
-    if taster:
-        lampe.turn_on()
-    if not taster:
-        lampe.turn_off()
+for i in range(3):
+    lampe.turn_on()
+    time.sleep(1)
+    lampe.turn_off()
+    time.sleep(8)
