@@ -1,5 +1,8 @@
 import numpy as np
 import os
+import subprocess
+import camera
+import yolo11
 
 # Datei-Pfade
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -103,9 +106,9 @@ def find_adjacent_info(block, blocks, mode, tolerance=50, vertical_tolerance=50)
     elif mode == "taster":
         if best_candidate:
             if best_candidate["class_name"] == "tasterGedruckt":
-                return "taster"
+                return "button.value == 1"
             elif best_candidate["class_name"] == "tasterNichtGedruckt":
-                return "not taster"
+                return "button.value == 0"
         return "True"
     else:
         return None
@@ -113,7 +116,7 @@ def find_adjacent_info(block, blocks, mode, tolerance=50, vertical_tolerance=50)
 # ----------------------------------------------------------------------------
 # Codegenerierung
 # ----------------------------------------------------------------------------
-output_lines = ["import time\nimport RPi.GPIO as GPIO\n\n"]
+output_lines = ["from gpiozero import LED, Button\nfrom time import sleep\n\nled = LED(17)\nbutton = Button(3)\n\n"]
 indentation_level = 0
 
 def get_indentation(level):
@@ -142,19 +145,21 @@ for block in code_blocks:
         if indentation_level > 0:
             indentation_level -= 1
     elif code == "lampeEin":
-        output_lines.append(f"{get_indentation(indentation_level)}lampe.turn_on()\n")
+        output_lines.append(f"{get_indentation(indentation_level)}led.on()\n")
     elif code == "lampeAus":
-        output_lines.append(f"{get_indentation(indentation_level)}lampe.turn_off()\n")
+        output_lines.append(f"{get_indentation(indentation_level)}led.off()\n")
     elif code == "Pausiere":
         paus_count = find_adjacent_info(block, blocks, mode="count", tolerance=50, vertical_tolerance=50)
         # Falls "unendlich" gefunden wird, verwenden wir stattdessen 1
         if paus_count == "unendlich":
             paus_count = "1"
-        output_lines.append(f"{get_indentation(indentation_level)}time.sleep({paus_count})\n")
+        output_lines.append(f"{get_indentation(indentation_level)}sleep({paus_count})\n")
 
 # Schreibe die generierten Python-Befehle in eine neue Datei
-output_file_path = "output_dynamic_loops.py"
+script_dir = os.path.dirname(os.path.abspath(__file__))
+output_file_path = os.path.join(script_dir, "final.py")
 with open(output_file_path, "w") as file:
     file.writelines(output_lines)
 
 print(f"Das Python-File wurde erfolgreich unter '{output_file_path}' erstellt.")
+subprocess.run(["python", "final.py"])
