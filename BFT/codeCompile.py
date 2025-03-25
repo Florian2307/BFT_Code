@@ -54,7 +54,6 @@ def find_adjacent_info(block, blocks, mode, tolerance=50, vertical_tolerance=50)
     """
     Sucht das Objekt, das unmittelbar rechts von dem gegebenen Block liegt.
     
-    "Unmittelbar rechts" bedeutet hier:
       - Der horizontale Abstand zwischen block["x_max"] und candidate["x_min"] 
         ist kleiner als 'tolerance' (kleine negative Abstaende werden akzeptiert,
         wenn sich Blokke ueberlappen).
