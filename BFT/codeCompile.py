@@ -11,10 +11,18 @@ tensor_path = os.path.join(script_dir, 'Tensor.csv')
 # CSV-Datei als NumPy-Array laden
 tensor = np.loadtxt(tensor_path, delimiter=",")  # Lade CSV als NumPy-Array
 
+
 confidence_threshold = 0.1
 
 # Filtere irrelevante Eintraege basierend auf der Konfidenz (Spalte 4)
-filtered_tensor = tensor[tensor[:, 4] > confidence_threshold]
+# filtered_tensor = tensor[tensor[:, 4] > confidence_threshold]
+
+tensor = np.atleast_2d(tensor)
+if tensor.shape[1] > 4:
+    filtered_tensor = tensor[tensor[:, 4] > confidence_threshold]
+else:
+    filtered_tensor = np.empty((0, tensor.shape[1]))  # or handle as needed
+
 
 # Sortiere primär nach y_min und sekundär nach x_min (vertikale Reihenfolge entspricht der Lesereihenfolge)
 sorted_tensor = filtered_tensor[np.lexsort((filtered_tensor[:, 0], filtered_tensor[:, 1]))]
