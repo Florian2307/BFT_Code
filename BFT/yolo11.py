@@ -2,9 +2,10 @@ from ultralytics import YOLO
 import os
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
+image_path = os.path.join(script_dir, 'code.png')
+
 model_path = os.path.join(script_dir, 'best.pt')
 model = YOLO(model_path)
-image_path = os.path.join(script_dir, 'code.png')
 results = model(image_path, save=True)
 output_tensor = results[0].boxes.data  # Rohdaten des ersten Bildes (Tensor)
 
