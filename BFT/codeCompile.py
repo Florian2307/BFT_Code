@@ -97,22 +97,24 @@ def find_adjacent_block(block, blocks, mode, tolerance=50, vertical_tolerance=50
                 best_diff = diff_x
                 best_candidate = candidate
 
-        if not best_candidate:
-            return None
+    if not best_candidate and mode == "count":
+        return "1"
+    elif not best_candidate:
+        return "True"
 
-        match mode:
-            case "count":
-                return {
-                    19: "unendlich",
-                    **{i: best_candidate["class_name"] for i in range(10)}
-                }.get(best_candidate["class_id"], "1")
-            case "taster":
-                return {
-                    "tasterGedruckt": "button.value == 1",
-                    "tasterNichtGedruckt": "button.value == 0"
-                }.get(best_candidate["class_name"], "True")
-            case _:
-                return None
+    match mode:
+        case "count":
+            return {
+                19: "unendlich",
+                **{i: best_candidate["class_name"] for i in range(10)}
+            }.get(best_candidate["class_id"], "1")
+        case "taster":
+            return {
+                "tasterGedruckt": "button.value == 1",
+                "tasterNichtGedruckt": "button.value == 0"
+            }.get(best_candidate["class_name"], "True")
+        case _:
+            return None
 
 
 
@@ -144,7 +146,7 @@ def generate_code(code_blocks, blocks):
 
 def handle_loop(block, blocks, output_lines, indentation_level):
     loop_count = find_adjacent_block(block, blocks, mode="count", tolerance=50, vertical_tolerance=50)
-    if loop_count == "unendlich":
+    if loop_count == "unendlich" or loop_count == None:
         output_lines.append(f"{get_indentation(indentation_level)}while True:\n")
     else:
         output_lines.append(f"{get_indentation(indentation_level)}for i in range({loop_count}):\n")
@@ -189,6 +191,8 @@ def handle_pausiere(block, blocks, output_lines, indentation_level):
     paus_count = find_adjacent_block(block, blocks, mode="count", tolerance=50, vertical_tolerance=50)
     if paus_count == "unendlich":
         paus_count = "1"
+    elif paus_count == None:
+        paus_count = "0"
     output_lines.append(f"{get_indentation(indentation_level)}sleep({paus_count})\n")
 
     return output_lines
