@@ -158,9 +158,6 @@ def handle_loop(block, blocks, output_lines, indentation_level):
 
 
 def handle_end_loop(block, blocks, output_lines, indentation_level):
-    if indentation_level > 0:
-        indentation_level -= 1
-
     return output_lines
 
 
@@ -172,9 +169,6 @@ def handle_if(block, blocks, output_lines, indentation_level):
 
 
 def handle_end_if(block, blocks, output_lines, indentation_level):
-    if indentation_level > 0:
-        indentation_level -= 1
-
     return output_lines
 
 
