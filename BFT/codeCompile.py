@@ -139,7 +139,10 @@ def generate_code(code_blocks, blocks):
         handler = action_map.get(code)
         if handler:
             output_lines = handler(block, blocks, output_lines, indentation_level)
-            indentation_level += 1 if code in ["loop", "if"] else -1
+            if code in ["loop", "if"]:
+                indentation_level += 1
+            elif code in ["endLoop", "endIf"]:
+                indentation_level -= 1
 
     return "".join(output_lines)
 
