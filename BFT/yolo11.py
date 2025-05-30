@@ -7,7 +7,6 @@ def main():
 
     create_tensor(image_path, script_dir)
 
-
 def create_tensor(image_path, dest_dir):
     model_path = os.path.join(dest_dir, 'best.pt')
     model = YOLO(model_path)
