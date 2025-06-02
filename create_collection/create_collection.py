@@ -42,7 +42,7 @@ def main():
     print(f"Collection path: {collection_path}")
     img_name = input("Tippe den Namen des Bildes ein (z.B. codeblock_Warte): ")
 
-    for i in range(3):
+    for i in range(5):
         print(i)
         file_name = f"{img_name}_{i}.png"
         image_path = os.path.join(collection_path, file_name)

@@ -42,7 +42,8 @@ def main():
     # Sortiere die code_blocks nach y_min (Lesereihenfolge von oben nach unten)
     code_blocks.sort(key=lambda b: b["y_min"])
 
-    image_path = camera.capture_image()
+    # camera.capture_image()
+    image_path = script_dir + "/code.png"
     yolo11.create_tensor(image_path, script_dir)
     code = generate_code(code_blocks, blocks)
     code_file_path = write_code_to_file(code)
@@ -97,22 +98,24 @@ def find_adjacent_block(block, blocks, mode, tolerance=50, vertical_tolerance=50
                 best_diff = diff_x
                 best_candidate = candidate
 
-    if not best_candidate and mode == "count":
-        return "1"
-    elif not best_candidate:
-        return "True"
+   
 
     match mode:
         case "count":
-            return {
-                19: "unendlich",
-                **{i: best_candidate["class_name"] for i in range(10)}
-            }.get(best_candidate["class_id"], "1")
+            if not best_candidate:
+                return "1"
+            elif best_candidate["class_id"] < 10:
+                return best_candidate["class_name"]
+            elif best_candidate["class_id"] == 19:
+                return "unendlich"
         case "taster":
-            return {
-                "tasterGedruckt": "button.value == 1",
-                "tasterNichtGedruckt": "button.value == 0"
-            }.get(best_candidate["class_name"], "True")
+            if best_candidate:
+                return {
+                    "tasterGedruckt": "button.value == 1",
+                    "tasterNichtGedruckt": "button.value == 0"
+                }.get(best_candidate["class_name"], "True")
+            elif not best_candidate:
+                return "True"
         case _:
             return None
 
