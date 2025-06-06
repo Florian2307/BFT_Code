@@ -5,6 +5,9 @@ import camera
 import yolo11
 
 def main():
+    compile_code()
+
+def compile_code():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     tensor_path = os.path.join(script_dir, 'Tensor.csv')
     tensor = np.atleast_2d(np.loadtxt(tensor_path, delimiter=","))
@@ -42,8 +45,8 @@ def main():
     # Sortiere die code_blocks nach y_min (Lesereihenfolge von oben nach unten)
     code_blocks.sort(key=lambda b: b["y_min"])
 
-    camera.capture_image()
-    image_path = script_dir + "/code.png"
+    # camera.capture_image()
+    image_path = script_dir + "/code3.png"
     yolo11.create_tensor(image_path, script_dir)
     code = generate_code(code_blocks, blocks)
     code_file_path = write_code_to_file(code)
@@ -103,11 +106,9 @@ def find_adjacent_block(block, blocks, mode, tolerance=50, vertical_tolerance=50
     match mode:
         case "count":
             if not best_candidate:
-                return "1"
+                return "unendlich"
             elif best_candidate["class_id"] < 10:
                 return best_candidate["class_name"]
-            elif best_candidate["class_id"] == 19:
-                return "unendlich"
         case "taster":
             if best_candidate:
                 return {

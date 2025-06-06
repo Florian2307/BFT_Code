@@ -4,7 +4,7 @@ from time import sleep
 led = LED(17)
 button = Button(3)
 
-for i in range(1):
+while True:
     led.off()
     if button.value == 1:
         led.off()
