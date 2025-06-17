@@ -45,7 +45,7 @@ def compile_code():
     # Sortiere die code_blocks nach y_min (Lesereihenfolge von oben nach unten)
     code_blocks.sort(key=lambda b: b["y_min"])
 
-    # camera.capture_image()
+    camera.capture_image()
     image_path = script_dir + "/code3.png"
     yolo11.create_tensor(image_path, script_dir)
     code = generate_code(code_blocks, blocks)
