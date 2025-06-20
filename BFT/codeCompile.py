@@ -46,7 +46,7 @@ def compile_code():
     code_blocks.sort(key=lambda b: b["y_min"])
 
     camera.capture_image()
-    image_path = script_dir + "/code3.png"
+    image_path = script_dir + "/code.png"
     yolo11.create_tensor(image_path, script_dir)
     code = generate_code(code_blocks, blocks)
     code_file_path = write_code_to_file(code)
