@@ -190,10 +190,8 @@ def handle_lampe_aus(block, blocks, output_lines, indentation_level):
 
 def handle_pausiere(block, blocks, output_lines, indentation_level):
     paus_count = find_adjacent_block(block, blocks, mode="count", tolerance=50, vertical_tolerance=50)
-    if paus_count == "unendlich":
+    if paus_count == "unendlich" or paus_count == None:
         paus_count = "1"
-    elif paus_count == None:
-        paus_count = "0"
     output_lines.append(f"{get_indentation(indentation_level)}sleep({paus_count})\n")
 
     return output_lines
