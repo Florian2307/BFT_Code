@@ -8,7 +8,7 @@ dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 file_path = "./BFT/codeCompile.py"
 os.chdir(dir_path)
 
-button = Button(3)
+button = Button(2)
 current_process = None
 
 def log(message):

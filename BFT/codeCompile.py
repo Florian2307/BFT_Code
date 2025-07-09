@@ -124,7 +124,7 @@ def find_adjacent_block(block, blocks, mode, tolerance=50, vertical_tolerance=50
 
 def generate_code(code_blocks, blocks):
     output_lines = [
-        "from gpiozero import LED, Button\nfrom time import sleep\n\nled = LED(17)\nbutton = Button(2)\n\n"
+        "from gpiozero import LED, Button\nfrom time import sleep\n\nled = LED(17)\nbutton = Button(3)\n\n"
     ]
     indentation_level = 0
 
